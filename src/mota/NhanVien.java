@@ -1,30 +1,31 @@
 package mota;
 
-public class NhanVien{
+import java.io.Serializable;
+
+public abstract class NhanVien implements Serializable {
     private String id;
     private String name;
     private int age;
-    private double wage;
-    private int number;
+
+    private String number;
     private String email;
 
     public NhanVien() {
     }
 
-    public NhanVien(String id, String name, int age, double wage, int number, String email) {
+    public NhanVien(String id, String name, int age, String number, String email) {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.wage = wage;
         this.number=number;
         this.email=email;
     }
 
-    public int number() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
@@ -36,7 +37,7 @@ public class NhanVien{
         this.email = email;
     }
 
-    public String id() {
+    public String getId() {
         return id;
     }
 
@@ -44,7 +45,7 @@ public class NhanVien{
         this.id = id;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
@@ -52,7 +53,7 @@ public class NhanVien{
         this.name = name;
     }
 
-    public int age() {
+    public int getAge() {
         return age;
     }
 
@@ -60,13 +61,7 @@ public class NhanVien{
         this.age = age;
     }
 
-    public double wage() {
-        return wage;
-    }
 
-    public void setWage(double wage) {
-        this.wage = wage;
-    }
     public double Payroll(){
         return 0;
     }
@@ -78,12 +73,9 @@ public class NhanVien{
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", age=" + age +
-                ", wage=" + wage +
-                ", number=" + number +
-                ", email= " + email ;
+                ", number='" + number + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
-
-
-
-    }
+}
 

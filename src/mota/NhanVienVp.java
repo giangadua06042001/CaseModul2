@@ -12,8 +12,8 @@ public class NhanVienVp extends NhanVien implements Serializable {
     public NhanVienVp() {
     }
 
-    public NhanVienVp(String id, String name, int age, double wage, int number, String email, double salary, double bonus, double punish, String location, String specialized) {
-        super(id, name, age, wage, number, email);
+    public NhanVienVp(String id, String name, int age, String number, String email, double salary, double bonus, double punish, String location, String specialized) {
+        super(id, name, age, number, email);
         this.salary=salary;
         this.bonus=bonus;
         this.punish=punish;

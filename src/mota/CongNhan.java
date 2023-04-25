@@ -9,8 +9,8 @@ public class CongNhan extends NhanVien implements Serializable {
     private double overtimeMoney;
     private double punish;
 
-    public CongNhan(String id, String name, int age, double wage, int number, String email, double salary, double bonus, double overtime, double overtimeMoney, double punish) {
-        super(id, name, age, wage, number, email);
+    public CongNhan(String id, String name, int age, String number, String email, double salary, double bonus, double overtime, double overtimeMoney, double punish) {
+        super(id, name, age, number, email);
         this.salary = salary;
         this.bonus = bonus;
         this.overtime = overtime;
@@ -66,12 +66,6 @@ public class CongNhan extends NhanVien implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString()
-                +" bonus="+" "+bonus
-                +"salary= "+" "+salary
-                +"overtime= "+" "+overtime
-                +"overtimeMoney= "+" "+overtimeMoney
-                +"punish= "+" "+punish
-                ;
+        return super.toString();
     }
 }

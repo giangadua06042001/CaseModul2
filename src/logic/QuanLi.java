@@ -1,87 +1,115 @@
 package logic;
 
+import input.CheckID;
 import mota.CongNhan;
 import mota.NhanVien;
 import mota.NhanVienIT;
 import mota.NhanVienVp;
+import readWritefile.ReadWfile;
 import readWritefile.WriteToFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 public class QuanLi extends Logic {
     private List<NhanVien> nhanViens;
+    ReadWfile readWfile = new ReadWfile();
+
 
     public QuanLi() {
-        this.nhanViens = new ArrayList<>();
+        nhanViens = readWfile.readFile();
     }
 
     public QuanLi(List<NhanVien> nhanViens) {
         this.nhanViens = nhanViens;
+
     }
+
 
     @Override
     public void add(NhanVien nhanVien) {
-        nhanViens.add(nhanVien);
-
-        WriteToFile.writeToFile(nhanViens);
+        boolean check = true;
+        for (NhanVien nv : nhanViens) {
+            if (nv.getId().equals(nhanVien.getId())) {
+                System.out.println("Id da ton tai");
+                check = false;
+                break;
+            }
+        }
+        if (check) {
+            nhanViens.add(nhanVien);
+            WriteToFile.writeToFile(nhanViens);
+        }
     }
 
-    public void showlistNVIT(){
-        for (NhanVien nv:nhanViens) {
-            NhanVienIT nhanVienIT=nv instanceof NhanVienIT?((NhanVienIT)nv):null;
-            for (int i = 0; i < nhanViens.size(); i++) {
-                System.out.println(nhanVienIT);
+
+    public void showlistNVIT() {
+        for (NhanVien nv : nhanViens) {
+            if (nv instanceof NhanVienIT) {
+                System.out.println(nv);
+
             }
         }
     }
-    public void showlistNVVP(){
-        for (NhanVien nv:nhanViens) {
-            NhanVienVp nhanVienVp=nv instanceof NhanVienVp?((NhanVienVp) nv):null;
-            for (int i = 0; i < nhanViens.size(); i++) {
-                System.out.println(nhanVienVp);
 
+    public void showlistNVVP() {
+        for (NhanVien nv : nhanViens) {
+            if (nv instanceof NhanVienVp) {
+                System.out.println(nv);
             }
         }
     }
-    public void showlistCN(){
-        for (NhanVien nv:nhanViens ) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            for (int i = 0; i < nhanViens.size(); i++) {
-                System.out.println(congNhan);
+
+    public void showlistCN() {
+        for (NhanVien nv : nhanViens) {
+            if (nv instanceof CongNhan) {
+                System.out.println(nv);
             }
         }
+
     }
 
     @Override
     public void search(String id) {
         for (NhanVien nv : nhanViens) {
-            if (nv.id().equals(id)) {
+            if (nv.getId().equals(id)) {
                 System.out.println(nv);
-                break;
             }
         }
     }
 
-    public void Search(String name) {
+    public void searchname(String name) {
+        boolean check = false;
         for (NhanVien nv : nhanViens) {
-            if (nv.name().equals(name)) {
+            if (nv.getName().toLowerCase().contains(name.toLowerCase())) {
                 System.out.println(nv);
-                break;
-            } else {
-                System.out.println("khong tim thay");
+                check = true;
             }
         }
+        if (!check) {
+            System.err.println("khong ton tai");
+        }
     }
+    public void Searchid(String id){
+        boolean check=false;
+        for (NhanVien nv:nhanViens) {
+            if(nv.getId().toLowerCase().contains(id.toLowerCase())){
+                System.out.println(nv);
+                check=true;
+            }
+        }
+        if(!check){
+            System.err.println("khong ton tai");
+        }
+    }
+
 
     @Override
     public void edit(String id, NhanVien nhanVien) {
         for (int i = 0; i < nhanViens.size(); i++) {
-            if (nhanViens.get(i).id().equals(id)) {
+            if (nhanViens.get(i).getId().equals(id)) {
                 nhanViens.set(i, nhanVien);
-                WriteToFile.readFile();
+
             }
 
         }
@@ -90,40 +118,34 @@ public class QuanLi extends Logic {
 
     @Override
     public void delete(String id) {
-        for (NhanVien nv:nhanViens) {
-            NhanVienIT nhanVienIT=nv instanceof NhanVienIT?((NhanVienIT)nv):null;
-            assert nhanVienIT != null;
-            if(nhanVienIT.id().equals(id)){
-                nhanViens.remove(nhanVienIT);
-            }
+        int index = getIndexById(id);
+        if (index >= 0) {
+            nhanViens.remove(index);
+        }
 
+    }
+
+    public void showNhanvien() {
+        for (NhanVien nv : nhanViens) {
+            System.out.println(nv);
         }
     }
-    public void deleteNVVP(String id){
-        for (NhanVien nv:nhanViens) {
-            NhanVienVp nhanVienVp=nv instanceof NhanVienVp?((NhanVienVp)nv):null;
-            assert nhanVienVp!=null;
-            if(nhanVienVp.id().equals(id)){
-                nhanViens.remove(nhanVienVp);
+
+
+    private int getIndexById(String id) {
+        int index = -1;
+        for (NhanVien nv : nhanViens) {
+            if (nv.getId().equals(id)) {
+                return nhanViens.indexOf(nv);
             }
         }
-    }
-    public void deleteCN(String id){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert  congNhan!=null;
-            if(congNhan.id().equals(id)){
-                nhanViens.remove(congNhan);
-            }
-        }
+        return index;
     }
 
     public double total() {
         double total = 0;
         for (NhanVien nv : nhanViens) {
             total += nv.Payroll();
-            WriteToFile.readFile();
-
         }
         return total;
     }
@@ -131,9 +153,8 @@ public class QuanLi extends Logic {
     public double salaryNVIT() {
         double total = 0;
         for (NhanVien nv : nhanViens) {
-            NhanVienIT nhanVienIT = nv instanceof NhanVienIT ? ((NhanVienIT) nv) : null;
-            assert nhanVienIT != null;
-            total = nhanVienIT.Payroll();
+            if (nv instanceof NhanVienIT)
+                total += nv.Payroll();
 
 
         }
@@ -143,10 +164,9 @@ public class QuanLi extends Logic {
     public double salaryNVVP() {
         double total = 0;
         for (NhanVien nv : nhanViens) {
-            NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
-            assert nhanVienVp != null;
-            total = nhanVienVp.Payroll();
-            WriteToFile.readFile();
+            if (nv instanceof NhanVienVp)
+                total += nv.Payroll();
+
         }
         return total;
 
@@ -155,10 +175,8 @@ public class QuanLi extends Logic {
     public double salaryCN() {
         double total = 0;
         for (NhanVien nv : nhanViens) {
-            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
-            assert congNhan != null;
-            total = congNhan.Payroll();
-            WriteToFile.readFile();
+            if (nv instanceof CongNhan)
+                total += nv.Payroll();
         }
         return total;
     }
@@ -182,17 +200,107 @@ public class QuanLi extends Logic {
     }
 
     public List<NhanVien> SapXep() {
-        Collections.sort(nhanViens, new Sort());
+        nhanViens.sort(new Sort());
         return nhanViens;
 
     }
 
-    public void editNV(String id) {
+     public NhanVien editNV(String id) {
         for (NhanVien nv : nhanViens) {
-            NhanVienIT nhanVienIT = nv instanceof NhanVienIT ? ((NhanVienIT) nv) : null;
-            assert nhanVienIT != null;
-            nhanVienIT.setId(id);
+            boolean check1 = true;
+            if (check1) {
+                if (nv instanceof NhanVienIT) {
+                    if(nv.getId().equals(id)){
+                        System.out.println(nv);
+                        Scanner scanner = new Scanner(System.in);
+                        System.out.println("nhap lai id moi");
+                        String iD = scanner.nextLine();
+                        CheckID check = new CheckID();
+                        boolean checkName = check.checkID(iD);
+                        if (checkName) {
+                            do {
+                                System.out.println("Nhap lai ID");
+                                String ID = scanner.nextLine();
+                                checkName = check.checkID(ID);
+                                if (!checkName) {
+                                    iD = ID;
+                                }
+
+                            } while (checkName);
+                        }
+
+                        nv.setId(iD);
+                        System.out.println(nv);
+                    }
+
+                }
+            }
         }
+        return null;
+    }
+    public NhanVien editIDVP(String id) {
+        for (NhanVien nv : nhanViens) {
+            boolean check1 = true;
+            if (check1) {
+                if (nv instanceof NhanVienVp) {
+                    if(nv.getId().equals(id)){
+                        System.out.println(nv);
+                        Scanner scanner = new Scanner(System.in);
+                        System.out.println("nhap lai id moi");
+                        String iD = scanner.nextLine();
+                        CheckID check = new CheckID();
+                        boolean checkName = check.checkID(iD);
+                        if (checkName) {
+                            do {
+                                System.out.println("Nhap lai ID");
+                                String ID = scanner.nextLine();
+                                checkName = check.checkID(ID);
+                                if (!checkName) {
+                                    iD = ID;
+                                }
+
+                            } while (checkName);
+                        }
+
+                        nv.setId(iD);
+                        System.out.println(nv);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    public NhanVien editIDCN(String id) {
+        for (NhanVien nv : nhanViens) {
+            boolean check1 = true;
+            if (check1) {
+                if (nv instanceof CongNhan) {
+                    if(nv.getId().equals(id)){
+                        System.out.println(nv);
+                        Scanner scanner = new Scanner(System.in);
+                        System.out.println("nhap lai id moi");
+                        String iD = scanner.nextLine();
+                        CheckID check = new CheckID();
+                        boolean checkName = check.checkID(iD);
+                        if (checkName) {
+                            do {
+                                System.out.println("Nhap lai ID");
+                                String ID = scanner.nextLine();
+                                checkName = check.checkID(ID);
+                                if (!checkName) {
+                                    iD = ID;
+                                }
+
+                            } while (checkName);
+                        }
+
+                        nv.setId(iD);
+                        System.out.println(nv);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public void editName(String name) {
@@ -215,11 +323,11 @@ public class QuanLi extends Logic {
         for (NhanVien nv : nhanViens) {
             NhanVienIT nhanVienIT = nv instanceof NhanVienIT ? ((NhanVienIT) nv) : null;
             assert nhanVienIT != null;
-            nhanVienIT.setWage(wage);
+            nhanVienIT.setSalary(wage);
         }
     }
 
-    public void editNumber(int number) {
+    public void editNumber(String number) {
         for (NhanVien nv : nhanViens) {
             NhanVienIT nhanVienIT = nv instanceof NhanVienIT ? ((NhanVienIT) nv) : null;
             assert nhanVienIT != null;
@@ -267,14 +375,6 @@ public class QuanLi extends Logic {
         }
     }
 
-    public void editNVP(String id) {
-        for (NhanVien nv : nhanViens) {
-            NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
-            assert nhanVienVp != null;
-            nhanVienVp.setId(id);
-        }
-    }
-
     public void editNameNVP(String name) {
         for (NhanVien nv : nhanViens) {
             NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
@@ -296,11 +396,11 @@ public class QuanLi extends Logic {
         for (NhanVien nv : nhanViens) {
             NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
             assert nhanVienVp != null;
-            nhanVienVp.setWage(luong);
+            nhanVienVp.setSalary(luong);
         }
     }
 
-    public void editNumberNVP(int number) {
+    public void editNumberNVP(String number) {
         for (NhanVien nv : nhanViens) {
             NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
             assert nhanVienVp != null;
@@ -316,104 +416,112 @@ public class QuanLi extends Logic {
         }
 
     }
-    public void editThuongNVP(double thuong){
-        for (NhanVien nv:nhanViens) {
-            NhanVienVp nhanVienVp=nv instanceof NhanVienVp?((NhanVienVp)nv):null;
-            assert nhanVienVp!=null;
+
+    public void editThuongNVP(double thuong) {
+        for (NhanVien nv : nhanViens) {
+            NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
+            assert nhanVienVp != null;
             nhanVienVp.setBonus(thuong);
         }
     }
-    public void editPhatNVP(double phat){
-        for (NhanVien nv:nhanViens) {
-            NhanVienVp nhanVienVp=nv instanceof NhanVienVp?((NhanVienVp)nv):null;
-            assert nhanVienVp!=null;
+
+    public void editPhatNVP(double phat) {
+        for (NhanVien nv : nhanViens) {
+            NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
+            assert nhanVienVp != null;
             nhanVienVp.setPunish(phat);
         }
     }
-    public void editChuyenNVP(String CN){
-        for (NhanVien nv:nhanViens) {
-            NhanVienVp nhanVienVp=nv instanceof NhanVienVp?((NhanVienVp)nv):null;
-            assert nhanVienVp!=null;
+
+    public void editChuyenNVP(String CN) {
+        for (NhanVien nv : nhanViens) {
+            NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
+            assert nhanVienVp != null;
             nhanVienVp.setSpecialized(CN);
         }
     }
-    public void editChucVuNVP(String cv){
-        for (NhanVien nv:nhanViens) {
-            NhanVienVp nhanVienVp=nv instanceof NhanVienVp?((NhanVienVp)nv):null;
-            assert nhanVienVp!=null;
+
+    public void editChucVuNVP(String cv) {
+        for (NhanVien nv : nhanViens) {
+            NhanVienVp nhanVienVp = nv instanceof NhanVienVp ? ((NhanVienVp) nv) : null;
+            assert nhanVienVp != null;
             nhanVienVp.setSpecialized(cv);
         }
     }
-    public void editIdCN(String id){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
-            congNhan.setId(id);
-        }
-    }
-    public void editNameCN(String name){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+
+    public void editNameCN(String name) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setName(name);
         }
     }
-    public void editAgeCN(int age){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void editAgeCN(int age) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setAge(age);
         }
     }
-    public void editLuongCN(double luong){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
-            congNhan.setWage(luong);
+
+    public void editLuongCN(double luong) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
+            congNhan.setSalary(luong);
         }
     }
-    public void editNumberCN(int number){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void editNumberCN(String number) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setNumber(number);
         }
     }
-    public void editEmaiCN(String email){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void editEmaiCN(String email) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setEmail(email);
         }
     }
-    public void editThuongCN(double thuong){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void editThuongCN(double thuong) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setBonus(thuong);
         }
     }
-    public void editPhatCN(double phat){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void editPhatCN(double phat) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setPunish(phat);
         }
     }
-    public void thoigianlamthemCN(double overtime){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void thoigianlamthemCN(double overtime) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setOvertime(overtime);
         }
     }
-    public void tienlamthemCN(double overtimeMoney){
-        for (NhanVien nv:nhanViens) {
-            CongNhan congNhan=nv instanceof CongNhan?((CongNhan) nv):null;
-            assert congNhan!=null;
+
+    public void tienlamthemCN(double overtimeMoney) {
+        for (NhanVien nv : nhanViens) {
+            CongNhan congNhan = nv instanceof CongNhan ? ((CongNhan) nv) : null;
+            assert congNhan != null;
             congNhan.setOvertimeMoney(overtimeMoney);
         }
     }
+
 }
 
 

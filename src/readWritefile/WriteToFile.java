@@ -13,24 +13,12 @@ public class WriteToFile {
             FileOutputStream outputStream=new FileOutputStream(file);
             ObjectOutputStream oss=new ObjectOutputStream(outputStream);
             oss.writeObject(nhanViens);
+            oss.close();
             outputStream.close();
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
-    public static List<NhanVien> readFile(){
-        List<NhanVien>nhanViens=new ArrayList<>();
 
-        try {
-            File file=new File("NhanVien.txt");
-            FileInputStream fileInputStream=new FileInputStream(file);
-            ObjectInputStream oss=new ObjectInputStream(fileInputStream);
-            nhanViens=(List<NhanVien>) oss.readObject();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return nhanViens;
-
-    }
 }

@@ -13,8 +13,8 @@ public class NhanVienIT extends NhanVien implements Serializable {
     public NhanVienIT() {
     }
 
-    public NhanVienIT(String id, String name, int age, double wage, int number, String email, double salary, double bonus, double punish, double attendanceMoney, String language) {
-        super(id, name, age, wage, number, email);
+    public NhanVienIT(String id, String name, int age, String number, String email, double salary, double bonus, double punish, double attendanceMoney, String language) {
+        super(id, name, age, number, email);
         this.salary=salary;
         this.bonus=bonus;
         this.punish=punish;
@@ -70,14 +70,6 @@ public class NhanVienIT extends NhanVien implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString()+
-                "salary= "+salary
-                +"bonus= "+bonus
-                +"punish "+punish
-                +"attendanceMoney= "+attendanceMoney
-                +"language="+language;
-
-
-
+        return super.toString()+"salary: "+" "+salary+"bonus: "+" "+bonus+"punish: "+" "+punish+"attendanceMoney: "+" "+attendanceMoney;
     }
 }
